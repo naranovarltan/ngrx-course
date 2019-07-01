@@ -1,6 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {select, Store} from "@ngrx/store";
-import {Observable} from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+
+import { AppState } from './reducers';
+import { Logout } from './auth/auth.actions';
+import { isLoggedIn } from './auth/auth.selectors';
 
 @Component({
   selector: 'app-root',
@@ -9,19 +14,25 @@ import {Observable} from "rxjs";
 })
 export class AppComponent implements OnInit {
 
+  isLoggedIn$: Observable<boolean>;
 
+  constructor(
+    private store$: Store<AppState>,
+    private router: Router
+  ) {
 
-    constructor() {
+  }
 
-    }
+  ngOnInit() {
+    this.isLoggedIn$ = this.store$
+      .pipe(
+        select(isLoggedIn)
+      );
+  }
 
-    ngOnInit() {
-
-
-    }
-
-    logout() {
-    }
+  logout() {
+    this.store$.dispatch(new Logout());
+  }
 
 
 }
